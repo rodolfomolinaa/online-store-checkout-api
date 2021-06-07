@@ -26,14 +26,21 @@ public class PurchaseController {
 	@Autowired
 	private PurchaseServiceImp purchaseService;
 
+	@GetMapping("/purchase")
+	public List<Purchase> getPurchases() {
+		return this.purchaseService.getPurchases();
+	}
+
 	@GetMapping("/purchase/{id}")
 	public Optional<Purchase> getPurchase(@PathVariable Long id) {
-		return this.purchaseService.getEmployee(id);
+		return this.purchaseService.getPurchase(id);
 	}
+
+//	private final String PRODUCTS_API = "https://online-store-312700.wn.r.appspot.com/api/products/";
+	private final String PRODUCTS_API = "http://localhost:5000/api/products/";
 
 	@PostMapping("/purchase")
 	public Purchase save(@RequestBody ProductWrapper products) {
-		String baseUrl = "http://localhost:5000/api/products/";
 		RestTemplate productRest = new RestTemplate();
 		List<PurchaseItem> purchaseItems = new ArrayList<PurchaseItem>();
 
@@ -43,9 +50,12 @@ public class PurchaseController {
 
 		try {
 			for (Product product : products.getProducts()) {
-				ProductResponse productResponse = productRest.getForObject(baseUrl + product.getId(),
+				ProductResponse productResponse = productRest.getForObject(PRODUCTS_API + product.getId(),
 						ProductResponse.class);
+				System.out.println("productResponse with ID " + product.getId() + " " + productResponse);
+
 				purchaseAmount += productResponse.getProduct().getPrice() * product.getQuantity();
+
 				PurchaseItem item = new PurchaseItem();
 				item.setProductId(productResponse.getProduct().getId());
 				item.setPrice(productResponse.getProduct().getPrice());
