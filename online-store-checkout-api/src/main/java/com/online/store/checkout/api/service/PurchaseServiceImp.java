@@ -1,5 +1,6 @@
 package com.online.store.checkout.api.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,19 @@ public class PurchaseServiceImp implements IPurchaseService {
 	private IPurchaseRepository repository;
 
 	@Override
-	public Purchase save(Purchase purchase) {
-		return this.repository.save(purchase);
+	public List<Purchase> getPurchases() {
+		return this.repository.findAll();
 	}
 
 	@Override
-	public Optional<Purchase> getEmployee(Long id) {
+	public Optional<Purchase> getPurchase(Long id) {
 		Optional<Purchase> purchase = this.repository.findById(id);
 		return purchase;
+	}
+
+	@Override
+	public Purchase save(Purchase purchase) {
+		return this.repository.save(purchase);
 	}
 
 }
